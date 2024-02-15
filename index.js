@@ -36,6 +36,8 @@ form.addEventListener('submit', postParty)
 async function postParty(event) {
 
     event.preventDefault()
+
+    const date = new Date(form.date.value).toISOString()
 try {
     const response = await fetch(BASE_URL, {
         method: 'POST',
@@ -43,9 +45,8 @@ try {
         body: JSON.stringify({ 
             id: Math.floor(Math.random() * 2000),
             name: form.name.value,
-            description: form.description.value,
-            // date: `${form.date.value}T00:00:00Z`, 
-            date: "2024-01-07T12:20:44.000Z",
+            description: form.description.value, 
+            date: date,
             location: form.location.value,
             cohortId: '223'                   
         })
