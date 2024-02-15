@@ -41,10 +41,13 @@ try {
         method: 'POST',
         headers: { 'Content-Type': 'application/json'},
         body: JSON.stringify({ 
+            id: Math.floor(Math.random() * 2000),
             name: form.name.value,
-            date: `${form.date.value}T00:00:00Z`, 
+            description: form.description.value,
+            // date: `${form.date.value}T00:00:00Z`, 
+            date: "2024-01-07T12:20:44.000Z",
             location: form.location.value,
-            description: form.description.value,                  
+            cohortId: '223'                   
         })
     })
     
@@ -53,25 +56,40 @@ try {
         console.error(error)
     }
 } 
-
-
-
-
+ 
+//DELETE 
+async function deleteParty(eventId) {
+    try {
+        await fetch (BASE_URL+'/'+eventId, {
+            method: 'DELETE'
+        })
+    } catch(error) {
+        console.error(error)
+    }
+    renderParties()
+}
 
 
 async function renderParties() {
     state.parties = await getParties()
     const htmlParties = state.parties.map(event =>{
-
+        const date = new Date(Date.parse(event.date)) //DAX'S FIX ISO 8601
         let div = document.createElement('div') 
 
         div.className = 'card'
         div.innerHTML = `
         <h3>${event.name}</h3> 
-        <p>${event.date}</p> 
+        <p>${date}</p> 
         <p>${event.location}</p>
-        <p>${event.description}</p>
+        <p>${event.description}</p> 
        `
+
+       const deleteButton = document.createElement('button')
+       deleteButton.innerText = 'Delete'
+       deleteButton.addEventListener('click', () => deleteParty(event.id))
+       div.appendChild(deleteButton)
+
+
         return div
        
     })
@@ -85,3 +103,4 @@ async function startApp() {
 }
 
 startApp()
+
